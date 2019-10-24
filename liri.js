@@ -1,13 +1,14 @@
+
 // So we can read and write environmental variables
 require("dotenv").config();
 
 // Grab all the packages that we'll need...
 let axios = require("axios");
-let inquirer = require("inquirer");
 let Spotify = require("node-spotify-api");
 let keys = require("./keys.js");
 let moment = require("moment");
 let fs = require("fs");
+moment().format();
 
 // Grab the Spotify key
 let spotify_key = new Spotify(keys.spotify);
@@ -35,16 +36,23 @@ function concertThis() {
   axios.get("https://rest.bandsintown.com/artists/" + name + "/events?app_id=codingbootcamp")
     .then(
       function (response) {
+
+        // Reference the data that we need
         let data = response.data[0];
 
+        // If there's no upcoming venue for this artist, default to Asgard, The Realm of the Gods
+        //let artistName, 
+        let concertDate = data.datetime;
+        concertDate = moment().utc().format('MM/DD/YYYY');
         // Pass the venue name, location and date
         let output = "\n+++++++++++++++++++++++++++++LIRI found this for you!+++++++++++++++++++++++++++++++\n" +
           "The name of the venue for " + name + " is " + data.venue.name + ".\n" +
           "The location for this show is at " + data.venue.city + ", " + data.venue.region + ", in " + data.venue.country + ".\n" +
-          "The show will be on " + data.datetime.moment().utc().format('MM/DD/YYYY') + ".\n";
+          "The show will be on " + concertDate + ".\n" + 
+          "The line-up will be: " + data.lineup.join(", ") + ".\n" + 
+          "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
 
           // Output the data
-          console.log(output);
           outputLog(output);
       })
 }
@@ -56,28 +64,28 @@ function spotifyThisSong() {
   if (!name) { name = "the Sign Ace of Base"; }
 
   // Run a search through Spotify based on the name of a song...
-  spotify_key.search({ type: "track", query: input, limit: 1 }, function (error, data) {
+  spotify_key.search({ type: "track", query: name, limit: 1 }, function (error, data) {
     if (error) { return console.log("Error occurred: " + error); }
     else {
       // Reference the items needed for our search, and declare a variable to concat all artists
-      let data = process.data.items[0];
+      let info = data.tracks.items[0];
       let artists = "";
 
       // Concat all the artists returned in our search...
-      data.artists.forEach(artist => {
+      for (let i = 0; i < info.artists.length; i++) {
         if (artists != "") { artists += ", "; }
-        artists += data.artists[i].name;
-      });
-
-      // Pass the formatted output data
+        artists += info.artists[i].name;
+      }
+      
+      // Pass the formatted output info
       let output = "\n+++++++++++++++++++++++++++++LIRI found this for you!+++++++++++++++++++++++++++++++\n" +
-        "Song name: " + data.ame + ".\n" +
-        "Album name: " + data.album.name + ".\n" +
+        "Song name: " + info.name + ".\n" +
+        "Album name: " + info.album.name + ".\n" +
         "Artist name(s): " + artists + ".\n" +
-        "Preview: " + data.external_urls.spotify + ".\n";
+        "Preview: " + info.external_urls.spotify + ".\n" + 
+        "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
 
       // Display our results for the user, and log it.
-      console.log(output);
       outputLog(output);
     }
   })
@@ -98,18 +106,10 @@ function movieThis() {
       let rottenTomatoesRating = "";
 
       // Whip through each of the ratings until we find the Rotten Tomatoes one...
-      data.Ratings.forEach(rating => {
-        if (rating.source === "Rotten Tomatoes") { rottenTomatoesRating = rating.value; }
-      });
+      for (let i = 0; i < data.Ratings.length; i++) {
+        if (data.Ratings[i].Source === "Rotten Tomatoes") { rottenTomatoesRating = data.Ratings[i].Value; }
+      }
 
-      // * Title of the movie.
-      // * Year the movie came out.
-      // * IMDB Rating of the movie.
-      // * Rotten Tomatoes Rating of the movie.
-      // * Country where the movie was produced.
-      // * Language of the movie.
-      // * Plot of the movie.
-      // * Actors in the movie.
       let output = "\n+++++++++++++++++++++++++++++LIRI found this for you!+++++++++++++++++++++++++++++++\n" +
         "Movie title: " + data.Title + ".\n" +
         "Year released: " + data.Year + ".\n" +
@@ -118,10 +118,10 @@ function movieThis() {
         "This movie was produced in : " + data.Country + ".\n" +
         "Original language: " + data.Language + ".\n" +
         "This movie's plot: " + data.Plot + ".\n" +
-        "Actors in this movie: " + data.Actors + ".\n";
+        "Actors in this movie: " + data.Actors + ".\n" + 
+        "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
 
       // Output results
-      console.log(output);
       outputLog(output);
     });
 }
@@ -147,19 +147,8 @@ function doWhatItSays() {
 }
 
 function outputLog(data) {
-
-  // Try to append the '\n' returns to the log file first...
-  fs.appendFile("log.txt", '\n\n', function (error) {
-    if (err) {
-      return console.log(err);
-    }
-  });
-
-  // Now, try to append the output passed, to the log...
-  fs.appendFile("log.txt", data, function (error) {
-    if (error) {
-      return console.log(error);
-    }
-    console.log("\nlog.txt was updated!\n");
-  });
+  fs.appendFile("log.txt", data, function (err) {
+    if (err) { throw (err); }
+    console.log(data);
+  })
 }
