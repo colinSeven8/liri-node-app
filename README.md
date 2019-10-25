@@ -87,4 +87,4 @@ Colin Reesor created this version of the LIRI bot!
 ****
 ## Demo Video
 
-Check out the [live demo](video/LIRI_homework_demo.webm)
+Check out the [live demo](https://drive.google.com/file/d/1zSogYJ5ANR6hz-gVTc6DgCKEb6lXZdG5/view)
