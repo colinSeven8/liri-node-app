@@ -234,3 +234,10 @@ Album name: The Hits--Chapter One.
 Artist name(s): Backstreet Boys.
 Preview: https://open.spotify.com/track/6e40mgJiCid5HRAGrbpGA6.
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
++++++++++++++++++++++++++++++LIRI found this for you!+++++++++++++++++++++++++++++++
+The name of the venue for Patterson Hood is AMP by Strathmore.
+The location for this show is at North Bethesda, MD, in United States.
+The show will be on 10/24/2019.
+The line-up will be: Patterson Hood.
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
