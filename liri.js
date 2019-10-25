@@ -40,11 +40,11 @@ function concertThis() {
         // Reference the data that we need
         let data = response.data[0];
 
-        // If there's no upcoming venue for this artist, default to Asgard, The Realm of the Gods
-        //let artistName, 
+        // Format the dating using Moment
         let concertDate = data.datetime;
         concertDate = moment().utc().format('MM/DD/YYYY');
-        // Pass the venue name, location and date
+
+        // Pass the venue name, location, date, and lineup
         let output = "\n+++++++++++++++++++++++++++++LIRI found this for you!+++++++++++++++++++++++++++++++\n" +
           "The name of the venue for " + name + " is " + data.venue.name + ".\n" +
           "The location for this show is at " + data.venue.city + ", " + data.venue.region + ", in " + data.venue.country + ".\n" +
